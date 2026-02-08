@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voltify | Smart Electronics Store</title>
+  <meta name="description" content="Buy modern smart electronics at the best prices. Cash on Delivery available across India." />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f1115;
+      color: #ffffff;
+    }
+    header {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0b0d12;
+    }
+    header h1 {
+      color: #4da3ff;
+      font-size: 24px;
+    }
+    header nav a {
+      color: #ffffff;
+      margin-left: 20px;
+      text-decoration: none;
+      opacity: 0.8;
+    }
+    .hero {
+      padding: 80px 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #121826, #0f1115);
+    }
+    .hero h2 {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+    .hero p {
+      font-size: 18px;
+      opacity: 0.85;
+      margin-bottom: 30px;
+    }
+    .hero button {
+      background: #4da3ff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .products {
+      padding: 60px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+    }
+    .product {
+      background: #151a28;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .product h3 {
+      margin: 10px 0;
+    }
+    .price {
+      color: #4da3ff;
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .product button {
+      background: transparent;
+      border: 1px solid #4da3ff;
+      color: #4da3ff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    footer {
+      padding: 30px;
+      text-align: center;
+      background: #0b0d12;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Voltify</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#products">Products</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Smart Electronics. Modern Life.</h2>
+    <p>Upgrade your setup with trending gadgets. Fast delivery & Cash on Delivery across India.</p>
+    <button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  </section>
+
+  <section class="products" id="products">
+    <div class="product">
+      <img src="https://via.placeholder.com/400x300" alt="Wireless Earbuds" />
+      <h3>Wireless Bluetooth Earbuds</h3>
+      <p>Noise reduction, long battery life, premium sound.</p>
+      <div class="price">₹1,499</div>
+      <button>Order Now (COD)</button>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/400x300" alt="Smart Watch" />
+      <h3>Smart Fitness Watch</h3>
+      <p>Track steps, heart rate & notifications.</p>
+      <div class="price">₹1,999</div>
+      <button>Order Now (COD)</button>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/400x300" alt="LED Light" />
+      <h3>RGB LED Desk Light</h3>
+      <p>Perfect for gaming & work setups.</p>
+      <div class="price">₹899</div>
+      <button>Order Now (COD)</button>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Voltify • Cash on Delivery Available
+  </footer>
+</body>
+</html>
