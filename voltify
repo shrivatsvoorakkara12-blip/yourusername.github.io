@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voltify Gaming Store</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
+  h1 { color: #00ffcc; text-align:center; }
+  #filters { margin-bottom: 20px; text-align:center; }
+  select { padding: 5px; border-radius: 5px; margin: 0 10px; }
+  .product { border: 1px solid #333; padding: 10px; margin: 10px; border-radius: 8px; display: inline-block; width: 200px; vertical-align: top; background: #1e1e1e; }
+  .product img { width:100%; height:150px; object-fit:cover; border-radius:5px; cursor:pointer; }
+  .cart { border: 1px solid #333; padding: 15px; margin-top: 20px; border-radius: 8px; background: #1e1e1e; max-width:400px; }
+  button { background: #00ffcc; color: #000; border: none; padding: 8px; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+  button:hover { background: #00cc99; }
+</style>
+</head>
+<body>
+
+<h1>Voltify Gaming Store</h1>
+
+<div id="filters">
+  <label>Filter by Type/Color:
+    <select id="typeFilter">
+      <option value="all">All</option>
+      <option value="accessory">Accessory</option>
+      <option value="hardware">Hardware</option>
+      <option value="console">Console</option>
+    </select>
+  </label>
+
+  <label>Max Price:
+    <select id="priceFilter">
+      <option value="0">No Limit</option>
+      <option value="2000">₹2,000</option>
+      <option value="5000">₹5,000</option>
+      <option value="10000">₹10,000</option>
+      <option value="50000">₹50,000</option>
+    </select>
+  </label>
+</div>
+
+<div id="products"></div>
+
+<div class="cart" id="cart">
+  <h2>Shopping Cart</h2>
+  <div id="cartItems">Cart is empty</div>
+  <h3>Total: ₹<span id="total">0</span></h3>
+  <button onclick="checkout()">Checkout</button>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const products = [
+    // Generate 30 products with 5 placeholder images each
+    ...Array.from({length:30}, (_,i)=>{
+      const id=i+1;
+      const types=["accessory","hardware","console"];
+      const type=types[i%3];
+      return {
+        id,
+        name:`Product ${id}`,
+        price:1000*(i+1),
+        type,
+        images:[
+          `https://via.placeholder.com/200x150?text=Product+${id}+Image+1`,
+          `https://via.placeholder.com/200x150?text=Product+${id}+Image+2`,
+          `https://via.placeholder.com/200x150?text=Product+${id}+Image+3`,
+          `https://via.placeholder.com/200x150?text=Product+${id}+Image+4`,
+          `https://via.placeholder.com/200x150?text=Product+${id}+Image+5`
+        ]
+      };
+    })
+  ];
+
+  const cart = [];
+  const currentImages = {};
+
+  function increasePrice(price){ return Math.round(price*1.3); }
+
+  function renderProducts(){
+    const productsContainer = document.getElementById("products");
+    productsContainer.innerHTML="";
+    const typeValue = document.getElementById("typeFilter").value;
+    const priceValue = Number(document.getElementById("priceFilter").value);
+
+    products.forEach(p=>{
+      const finalPrice = increasePrice(p.price);
+      if((typeValue==="all" || p.type===typeValue) && (priceValue===0 || finalPrice<=priceValue)){
+        if(currentImages[p.id]===undefined) currentImages[p.id]=0;
+        const div=document.createElement("div");
+        div.className="product";
+        div.innerHTML=`
+          <img src="${p.images[currentImages[p.id]]}" onclick="nextImage(${p.id})" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>Price: ₹${finalPrice}</p>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        `;
+        productsContainer.appendChild(div);
+      }
+    });
+  }
+
+  function nextImage(id){
+    currentImages[id]=(currentImages[id]+1)%products.find(p=>p.id===id).images.length;
+    renderProducts();
+  }
+
+  function addToCart(id){
+    const product=products.find(p=>p.id===id);
+    const finalPrice=increasePrice(product.price);
+    cart.push({...product, finalPrice});
+    renderCart();
+  }
+
+  function renderCart(){
+    const cartContainer=document.getElementById("cartItems");
+    if(cart.length===0){ cartContainer.innerHTML="Cart is empty"; document.getElementById("total").innerText=0; return; }
+    cartContainer.innerHTML="";
+    let total=0;
+    cart.forEach((item,index)=>{
+      total+=item.finalPrice;
+      const div=document.createElement("div");
+      div.innerHTML=`${item.name} - ₹${item.finalPrice} <button onclick="removeFromCart(${index})">Remove</button>`;
+      cartContainer.appendChild(div);
+    });
+    document.getElementById("total").innerText=total;
+  }
+
+  function removeFromCart(index){ cart.splice(index,1); renderCart(); }
+
+  function checkout(){
+    if(cart.length===0){ alert("Cart is empty!"); return; }
+    const totalAmount=cart.reduce((sum,item)=>sum+item.finalPrice,0);
+    const options = {
+      key: "YOUR_RAZORPAY_KEY", // Replace with your Razorpay key
+      amount: totalAmount*100,
+      currency: "INR",
+      name: "Voltify Gaming Store",
+      description: "Purchase of multiple gaming products",
+      handler: function(response){
+        alert("Payment Successful! Payment ID: "+response.razorpay_payment_id);
+        cart.length=0; renderCart();
+      },
+      prefill:{ name:"Customer Name", email:"customer@example.com", contact:"9999999999" },
+      theme:{ color:"#00ffcc" }
+    };
+    const rzp=new Razorpay(options); rzp.open();
+  }
+
+  document.getElementById("typeFilter").addEventListener("change", renderProducts);
+  document.getElementById("priceFilter").addEventListener("change", renderProducts);
+
+  renderProducts();
+  renderCart();
+</script>
+</body>
+</html>
